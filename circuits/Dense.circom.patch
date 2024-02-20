@@ -4,7 +4,7 @@ include "./circomlib-matrix/matMul.circom";
 include "utils-comp.circom";
 // Dense layer
 // Multiply a vector of shape nInputs with a weight matrix of shape nInputs * nOutputs, then add the result with a bias vector
-template Dense (nInputs, nOutputs) {
+template Dense (nInputs, nOutputs, n) {
     signal input in[nInputs];
     signal input weights[nInputs][nOutputs];
     signal input bias[nOutputs];
@@ -15,7 +15,7 @@ template Dense (nInputs, nOutputs) {
 
     for (var i=0; i<nOutputs; i++) {
         dot[i] = matMul(1,nInputs,1);
-        shiftBase10[i] = ShiftBase10();
+        shiftBase10[i] = ShiftBase10(n);
 		
         for (var j=0; j<nInputs; j++) {
             dot[i].a[0][j] <== in[j];
