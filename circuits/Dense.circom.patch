@@ -8,19 +8,21 @@ template Dense (nInputs, nOutputs) {
     signal input in[nInputs];
     signal input weights[nInputs][nOutputs];
     signal input bias[nOutputs];
-    signal input out[nOutputs];
+    signal output out[nOutputs];
     
     component dot[nOutputs];
-	component shiftBase10 = ShiftBase10();
+	component shiftBase10[nOutputs];
 
     for (var i=0; i<nOutputs; i++) {
         dot[i] = matMul(1,nInputs,1);
-        
+        shiftBase10[i] = ShiftBase10();
+		
         for (var j=0; j<nInputs; j++) {
             dot[i].a[0][j] <== in[j];
             dot[i].b[j][0] <== weights[j][i];
         }
 
-        out[i] <== ShiftBase10(dot[i].out[0][0] + bias[i]);
+		shiftBase10[i].in <== dot[i].out[0][0] + bias[i];
+        out[i] <== shiftBase10[i].out;
     }
 }
